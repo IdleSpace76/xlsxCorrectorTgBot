@@ -1,0 +1,30 @@
+package ru.idles;
+
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+/**
+ * @author a.zharov
+ */
+public class Main {
+    public static void main(String[] args) throws TelegramApiException {
+        // загрузка пропертей
+        Properties properties = new Properties();
+        try (InputStream inputStream = Main.class.getClassLoader().getResourceAsStream("app.properties")){
+            properties.load(inputStream);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // инициализация бота
+        TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+        Bot bot = new Bot(properties.getProperty("botToken"));
+        botsApi.registerBot(bot);
+    }
+}

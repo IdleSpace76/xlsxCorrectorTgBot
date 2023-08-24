@@ -84,11 +84,12 @@ public class XlsxCreator {
             // заполнение основной части
             int rowNum = 2;
             for (i = 3; i < data.size(); i++) {
-                int indexForCut = data.get(i).get(2).indexOf("п.");
-                while (data.get(i).get(2).charAt(indexForCut - 1) == ',') {
+                String originString = data.get(i).get(2);
+                int indexForCut = originString.indexOf("п.");
+                while (originString.charAt(indexForCut - 1) == ',') {
                     indexForCut--;
                 }
-                String newString = data.get(i).get(2).substring(0, indexForCut);
+                String newString = originString.substring(0, indexForCut);
                 if (newString.equalsIgnoreCase(
                         newSheet.getRow(rowNum - 1).getCell(0).getStringCellValue())) {
                     continue;

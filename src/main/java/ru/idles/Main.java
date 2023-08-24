@@ -18,7 +18,7 @@ public class Main {
 
     public static void main(String[] args) throws TelegramApiException {
 
-        logger.info("Entering application.");
+        logger.info("Entering application");
 
         // загрузка пропертей
         Properties properties = new Properties();
@@ -31,6 +31,7 @@ public class Main {
         }
 
         // инициализация бота
+        logger.info("Bot initialization");
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
         Bot bot = new Bot(properties.getProperty("botToken"));
         botsApi.registerBot(bot);

@@ -1,5 +1,6 @@
 package ru.idles;
 
+import org.apache.log4j.Logger;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
@@ -21,6 +22,9 @@ import java.nio.file.Files;
  * @author a.zharov
  */
 public class Bot extends TelegramLongPollingBot {
+
+    static Logger logger = Logger.getLogger(Bot.class);
+
     public Bot(String token) {
         super(token);
     }
@@ -28,15 +32,21 @@ public class Bot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         Message msg = update.getMessage();
+        logger.info("Msg from [" + msg.getFrom().getUserName() + "] was accepted with id ["
+            + msg.getMessageId() + "]");
         User user = msg.getFrom();
         Long id = user.getId();
 
         Document document = msg.getDocument();
         File originFile = saveDoc(document);
+        logger.info("File was saved from msg with id [" + msg.getMessageId() + "]");
 
         File newFile = XlsxCreator.correctXlsx(originFile);
+        logger.info("File was corrected from msg with id [" + msg.getMessageId() + "]");
 
         sendDoc(id, newFile);
+        logger.info("File was sent from msg with id [" + msg.getMessageId() + "] to ["
+            + msg.getFrom().getUserName() + "]");
 
         try {
             Files.delete(originFile.toPath());

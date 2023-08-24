@@ -101,15 +101,14 @@ public class XlsxCreator {
             }
 
             // создание файла
-            File currDir = new File(".");
-            String path = currDir.getAbsolutePath();
-            String fileLocation = path.substring(0, path.length() - 1) + "new.xlsx";
-            FileOutputStream outputStream = new FileOutputStream(fileLocation);
+            File newFile = new File("new.xlsx");
+            FileOutputStream outputStream = new FileOutputStream(newFile);
             newWorkbook.write(outputStream);
 
             newWorkbook.close();
+            outputStream.close();
 
-            return new File(fileLocation);
+            return newFile;
         }
         catch (IOException e) {
             throw new RuntimeException(e);

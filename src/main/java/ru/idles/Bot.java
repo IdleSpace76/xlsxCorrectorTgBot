@@ -1,16 +1,23 @@
 package ru.idles;
 
-import org.apache.commons.io.FileUtils;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
-import org.telegram.telegrambots.meta.api.objects.*;
+import org.telegram.telegrambots.meta.api.objects.Document;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.io.*;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
 
 /**
+ * Класс бота
+ *
  * @author a.zharov
  */
 public class Bot extends TelegramLongPollingBot {
@@ -32,8 +39,8 @@ public class Bot extends TelegramLongPollingBot {
         sendDoc(id, newFile);
 
         try {
-            FileUtils.delete(originFile);
-            FileUtils.delete(newFile);
+            Files.delete(originFile.toPath());
+            Files.delete(newFile.toPath());
         }
         catch (IOException e) {
             throw new RuntimeException(e);
@@ -42,7 +49,7 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "xlsCorrectorBot";
+        return "xlsxCorrectorBot";
     }
 
     private void sendDoc(Long who, File what) {
@@ -62,11 +69,11 @@ public class Bot extends TelegramLongPollingBot {
         GetFile getFile = GetFile.builder()
                 .fileId(document.getFileId())
                 .build();
-        try (FileOutputStream fos = new FileOutputStream(".\\origin.xlsx");)  {
+        try (FileOutputStream fos = new FileOutputStream("origin.xlsx"))  {
             String filePath = execute(getFile).getFilePath();
             File originFile = downloadFile(filePath);
-            fos.write(FileUtils.readFileToByteArray(originFile));
-            return originFile;
+            fos.write(Files.readAllBytes(originFile.toPath()));
+            return new File("origin.xlsx");
         }
         catch (TelegramApiException | IOException e) {
             throw new RuntimeException(e);
